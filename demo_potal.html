@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PerfSDK Portal Demo</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #1f2937;
+    }
+
+    .topbar {
+      height: 72px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #111827;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #10b981;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .select-box {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 16px;
+      color: #111827;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .container {
+      padding: 28px 40px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #4b5563;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric {
+      font-size: 44px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .green {
+      color: #059669;
+    }
+
+    .blue {
+      color: #2563eb;
+    }
+
+    .red {
+      color: #dc2626;
+    }
+
+    .subtext {
+      font-size: 17px;
+      color: #374151;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 16px;
+      padding: 26px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    .panel-title {
+      font-size: 21px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #111827;
+    }
+
+    .chart {
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(#ffffff, #f9fafb);
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .axis-label {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .chart svg {
+      width: 90%;
+      height: 210px;
+    }
+
+    .legend {
+      position: absolute;
+      right: 40px;
+      top: 70px;
+      font-size: 15px;
+      line-height: 32px;
+      background: rgba(255,255,255,0.8);
+      padding: 10px 16px;
+      border-radius: 10px;
+    }
+
+    .line-red {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    .line-blue {
+      color: #2563eb;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    th {
+      background: #f3f4f6;
+      color: #374151;
+      text-align: left;
+      padding: 14px;
+      border-bottom: 1px solid #d1d5db;
+    }
+
+    td {
+      padding: 14px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    tr:hover {
+      background: #f9fafb;
+    }
+
+    .badge-get {
+      background: #d1fae5;
+      color: #047857;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: bold;
+    }
+
+    .badge-post {
+      background: #dbeafe;
+      color: #1d4ed8;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: bold;
+    }
+
+    .warn {
+      background: #fef3c7;
+      color: #b45309;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 13px;
+      margin-left: 8px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .filter {
+      background: white;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 11px 16px;
+      font-size: 15px;
+      color: #374151;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-icon">📊</div>
+      PerfSDK
+    </div>
+
+    <div class="controls">
+      <div class="select-box">⚙️ My Android App ▼</div>
+      <div class="select-box">🕒 Context: Last 24 Hours ▼</div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="filters">
+      <div class="filter">App Version: 1.0.3 ▼</div>
+      <div class="filter">Android Version: All ▼</div>
+      <div class="filter">Device Model: All ▼</div>
+      <div class="filter">Network Type: All ▼</div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-title">App Health Score</div>
+        <div class="metric green">92 / 100</div>
+        <div class="subtext">Status: Excellent</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Average Startup Time</div>
+        <div class="metric blue">1.4s</div>
+        <div class="subtext">12% faster than last week</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Network Error Rate</div>
+        <div class="metric red">0.8%</div>
+        <div class="subtext">Below critical threshold</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Latency Trends: P95 vs Median</div>
+
+      <div class="chart">
+        <div class="axis-label">Latency (ms)</div>
+
+        <svg viewBox="0 0 900 220">
+          <line x1="40" y1="20" x2="40" y2="190" stroke="#9ca3af" />
+          <line x1="40" y1="190" x2="860" y2="190" stroke="#9ca3af" />
+
+          <line x1="40" y1="50" x2="860" y2="50" stroke="#e5e7eb" stroke-dasharray="6" />
+          <line x1="40" y1="110" x2="860" y2="110" stroke="#e5e7eb" stroke-dasharray="6" />
+          <line x1="40" y1="160" x2="860" y2="160" stroke="#e5e7eb" stroke-dasharray="6" />
+
+          <text x="5" y="54" font-size="13" fill="#6b7280">400ms</text>
+          <text x="5" y="114" font-size="13" fill="#6b7280">200ms</text>
+          <text x="14" y="194" font-size="13" fill="#6b7280">0ms</text>
+
+          <text x="40" y="215" font-size="13" fill="#6b7280">00:00</text>
+          <text x="240" y="215" font-size="13" fill="#6b7280">04:00</text>
+          <text x="440" y="215" font-size="13" fill="#6b7280">08:00</text>
+          <text x="640" y="215" font-size="13" fill="#6b7280">12:00</text>
+          <text x="800" y="215" font-size="13" fill="#6b7280">16:00</text>
+
+          <polyline
+            points="40,135 100,128 160,132 220,124 280,130 340,118 400,122 470,115 520,118 560,60 590,112 650,120 710,116 770,123 830,119"
+            fill="none"
+            stroke="#dc2626"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+
+          <polyline
+            points="40,158 100,154 160,156 220,153 280,155 340,150 400,151 470,148 520,150 590,145 650,149 710,151 770,150 830,148"
+            fill="none"
+            stroke="#2563eb"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+
+        <div class="legend">
+          <div><span class="line-red">━━</span> P95 Latency: 320ms</div>
+          <div><span class="line-blue">━━</span> Median Latency: 110ms</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Slowest Endpoints</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint URL</th>
+            <th>Total Requests</th>
+            <th>Average Latency</th>
+            <th>P95 Latency</th>
+            <th>Error Rate</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td><span class="badge-get">GET</span></td>
+            <td>/api/v1/user/profile</td>
+            <td>45,200</td>
+            <td>120ms</td>
+            <td>240ms</td>
+            <td>0.1%</td>
+          </tr>
+
+          <tr>
+            <td><span class="badge-post">POST</span></td>
+            <td>/api/v1/images/upload <span class="warn">WARN</span></td>
+            <td>12,100</td>
+            <td>850ms</td>
+            <td class="red">2,400ms</td>
+            <td class="red">4.2%</td>
+          </tr>
+
+          <tr>
+            <td><span class="badge-post">POST</span></td>
+            <td>/api/v1/auth/login</td>
+            <td>85,000</td>
+            <td>45ms</td>
+            <td>95ms</td>
+            <td>0.5%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Slowest Screens</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Screen Name</th>
+            <th>Total Traces</th>
+            <th>Average Load Time</th>
+            <th>P95 Load Time</th>
+            <th>App Version</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>HomeScreen</td>
+            <td>32,500</td>
+            <td>620ms</td>
+            <td>1,100ms</td>
+            <td>1.0.3</td>
+          </tr>
+
+          <tr>
+            <td>ProfileScreen</td>
+            <td>18,900</td>
+            <td>1,250ms</td>
+            <td class="red">2,300ms</td>
+            <td>1.0.3</td>
+          </tr>
+
+          <tr>
+            <td>LoginScreen</td>
+            <td>40,100</td>
+            <td>420ms</td>
+            <td>800ms</td>
+            <td>1.0.3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</body>
+</html>
