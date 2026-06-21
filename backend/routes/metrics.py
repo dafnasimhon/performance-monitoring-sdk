@@ -176,6 +176,23 @@ async def network_errors(
     )
 
 
+@router.get("/metrics/events-over-time")
+async def events_over_time(
+    app_id: str = Depends(_get_app_id),
+    from_ts: Optional[int] = Query(default=None),
+    to_ts: Optional[int] = Query(default=None),
+    app_version: Optional[str] = Query(default=None),
+    network_type: Optional[str] = Query(default=None),
+    device_model: Optional[str] = Query(default=None),
+):
+    return await metrics_service.get_events_over_time(
+        app_id,
+        from_ts if from_ts is not None else _week_ago_ms(),
+        to_ts if to_ts is not None else _now_ms(),
+        app_version, network_type, device_model,
+    )
+
+
 @router.get("/metrics/traces")
 async def trace_stats(
     app_id: str = Depends(_get_app_id),

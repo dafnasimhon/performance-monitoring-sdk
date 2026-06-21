@@ -61,6 +61,14 @@ async def get_summary(app_id, from_ts, to_ts, app_version, network_type, device_
         breakdown[doc["_id"]] = doc["count"]
         total += doc["count"]
 
+    session_count = 0
+    async for doc in db["raw_events"].aggregate([
+        {"$match": base},
+        {"$group": {"_id": "$sessionId"}},
+        {"$count": "count"},
+    ]):
+        session_count = doc.get("count", 0)
+
     async def _avg(event_type: str) -> Optional[float]:
         async for doc in db["raw_events"].aggregate([
             {"$match": {**base, "eventType": event_type}},
@@ -72,6 +80,7 @@ async def get_summary(app_id, from_ts, to_ts, app_version, network_type, device_
 
     return {
         "totalEvents": total,
+        "sessionCount": session_count,
         "avgStartupMs": await _avg("APP_STARTUP"),
         "avgScreenLoadMs": await _avg("SCREEN_LOAD"),
         "avgNetworkMs": await _avg("NETWORK_REQUEST"),
@@ -382,6 +391,28 @@ async def get_network_errors(app_id, from_ts, to_ts, app_version, network_type, 
     ).sort("timestamp", -1).limit(limit)
     async for doc in cursor:
         results.append(doc)
+    return results
+
+
+async def get_events_over_time(app_id, from_ts, to_ts, app_version, network_type, device_model):
+    db = get_db()
+    base: dict = {"appId": app_id, "timestamp": {"$gte": from_ts, "$lte": to_ts}}
+    if app_version:  base["appVersion"]  = app_version
+    if network_type: base["networkType"] = network_type
+    if device_model: base["deviceModel"] = device_model
+
+    HOUR_MS = 3_600_000
+    pipeline = [
+        {"$match": base},
+        {"$group": {
+            "_id": {"$subtract": ["$timestamp", {"$mod": ["$timestamp", HOUR_MS]}]},
+            "count": {"$sum": 1},
+        }},
+        {"$sort": {"_id": 1}},
+    ]
+    results = []
+    async for doc in db["raw_events"].aggregate(pipeline):
+        results.append({"hourTs": doc["_id"], "count": doc["count"]})
     return results
 
 

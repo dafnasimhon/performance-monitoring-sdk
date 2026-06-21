@@ -40,20 +40,26 @@ class CartActivity : AppCompatActivity() {
         binding.rvCartItems.layoutManager = LinearLayoutManager(this)
 
         lifecycleScope.launch {
-            // Custom trace: calculate total from real product prices
+            // Delay varies by product price so P95 differs visibly from average
             PerfSDK.startTrace("calculateTotal")
             val total = withContext(Dispatchers.Default) {
                 var sum = 0.0
                 for (product in items) {
                     sum += product.price
-                    Thread.sleep(10) // simulate per-item processing work
+                    Thread.sleep((product.price % 40 + 8).toLong())
                 }
                 sum
             }
             PerfSDK.stopTrace("calculateTotal")
 
-            binding.progressBar.visibility = View.GONE
+            PerfSDK.startTrace("renderCart")
+            withContext(Dispatchers.Default) {
+                items.forEach { Thread.sleep((it.price % 15 + 3).toLong()) }
+            }
             binding.rvCartItems.adapter = CartAdapter(items)
+            PerfSDK.stopTrace("renderCart")
+
+            binding.progressBar.visibility = View.GONE
             binding.tvTotal.text = "$${String.format("%.2f", total)}"
 
             binding.rvCartItems.visibility = View.VISIBLE

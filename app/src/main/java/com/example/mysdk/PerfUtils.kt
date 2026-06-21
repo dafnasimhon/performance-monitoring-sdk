@@ -1,19 +1,15 @@
 package com.example.mysdk
 
-import com.example.perfsdk.PerfSDK
 import retrofit2.HttpException
 
+// Network calls are now tracked automatically by PerfSDK.okHttpInterceptor() in RetrofitClient.
+// This wrapper only handles error swallowing so activities don't crash on network failures.
 suspend fun <T> tracked(method: String, endpoint: String, block: suspend () -> T): T? {
-    val start = System.currentTimeMillis()
     return try {
-        val result = block()
-        PerfSDK.trackNetworkCall(method, endpoint, 200, System.currentTimeMillis() - start)
-        result
+        block()
     } catch (e: HttpException) {
-        PerfSDK.trackNetworkCall(method, endpoint, e.code(), System.currentTimeMillis() - start)
         null
     } catch (e: Exception) {
-        PerfSDK.trackNetworkCall(method, endpoint, 0, System.currentTimeMillis() - start)
         null
     }
 }

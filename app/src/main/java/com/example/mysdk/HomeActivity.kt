@@ -13,8 +13,10 @@ import com.example.mysdk.api.RetrofitClient
 import com.example.mysdk.databinding.ActivityHomeBinding
 import com.example.perfsdk.PerfSDK
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeActivity : AppCompatActivity() {
 
@@ -64,12 +66,18 @@ class HomeActivity : AppCompatActivity() {
                 binding.chipContainer.addView(chip)
             }
 
+            PerfSDK.startTrace("renderProductGrid")
+            withContext(Dispatchers.Default) {
+                // Simulate layout calculation work per product
+                products.forEach { Thread.sleep((it.price % 20 + 5).toLong()) }
+            }
             binding.rvProducts.adapter = ProductAdapter(products) { product ->
                 startActivity(
                     Intent(this@HomeActivity, ProductDetailActivity::class.java)
                         .putExtra(Extras.PRODUCT_ID, product.id)
                 )
             }
+            PerfSDK.stopTrace("renderProductGrid")
 
             binding.progressBar.visibility = View.GONE
         }

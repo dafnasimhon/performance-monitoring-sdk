@@ -14,4 +14,5 @@ export const getNetworkErrors = (params) => api.get('/metrics/network/errors', {
 export const getHealthScore     = (params) => api.get('/metrics/health',         { params })
 export const getSlowestDevices  = (params) => api.get('/metrics/devices',        { params })
 export const getVersionStats    = (params) => api.get('/metrics/versions',       { params })
-export const getNetworkByType   = (params) => api.get('/metrics/network-by-type',{ params })
+export const getNetworkByType    = (params) => api.get('/metrics/network-by-type',  { params })
+export const getEventsOverTime   = (params) => api.get('/metrics/events-over-time', { params })

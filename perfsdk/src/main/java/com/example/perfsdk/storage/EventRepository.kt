@@ -5,7 +5,16 @@ import com.example.perfsdk.model.PerformanceEvent
 
 internal class EventRepository(private val dao: EventDao) {
 
+    companion object {
+        private const val MAX_QUEUE_SIZE = 1000
+    }
+
     suspend fun saveEvent(event: PerformanceEvent) {
+        val total = dao.countAllEvents()
+        if (total >= MAX_QUEUE_SIZE) {
+            // Drop oldest events to make room — keeps the queue bounded during long offline periods
+            dao.deleteOldestEvents(total - MAX_QUEUE_SIZE + 1)
+        }
         dao.insertEvent(event.toEntity())
     }
 
@@ -22,6 +31,8 @@ internal class EventRepository(private val dao: EventDao) {
     suspend fun resetStuckEvents() = dao.resetStuckEvents()
 
     suspend fun countPendingEvents(): Int = dao.countPendingEvents()
+
+    suspend fun countAllEvents(): Int = dao.countAllEvents()
 }
 
 private fun PerformanceEvent.toEntity() = EventEntity(

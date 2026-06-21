@@ -17,7 +17,9 @@ import com.example.perfsdk.lifecycle.PerfLifecycleObserver
 import com.example.perfsdk.model.EventType
 import com.example.perfsdk.model.PerformanceEvent
 import com.example.perfsdk.network.BatchSender
+import com.example.perfsdk.network.PerfInterceptor
 import com.example.perfsdk.network.RetrofitProvider
+import okhttp3.Interceptor
 import com.example.perfsdk.storage.EventRepository
 import com.example.perfsdk.storage.PerfDatabase
 import com.example.perfsdk.worker.EventUploadWorker
@@ -196,6 +198,10 @@ object PerfSDK {
         Log.d(TAG, "Network call tracked: $method $endpoint $statusCode (${latencyMs}ms)")
         saveEventAsync(event)
     }
+
+    // ── OkHttp interceptor ───────────────────────────────────────────────────
+
+    fun okHttpInterceptor(): Interceptor = PerfInterceptor()
 
     // ── Flush ─────────────────────────────────────────────────────────────────
 

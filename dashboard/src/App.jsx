@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { getSummary, getStartup, getScreens, getNetwork, getTraces, getNetworkErrors, getHealthScore, getSlowestDevices, getVersionStats, getNetworkByType } from './api/metrics'
+import { getSummary, getStartup, getScreens, getNetwork, getTraces, getNetworkErrors, getHealthScore, getSlowestDevices, getVersionStats, getNetworkByType, getEventsOverTime } from './api/metrics'
 import Filters from './components/Filters'
 import KpiCard from './components/KpiCard'
 import StartupChart from './components/StartupChart'
@@ -11,6 +11,7 @@ import HealthScore from './components/HealthScore'
 import SlowestDevices from './components/SlowestDevices'
 import VersionStats from './components/VersionStats'
 import NetworkComparison from './components/NetworkComparison'
+import EventsOverTime from './components/EventsOverTime'
 import './App.css'
 
 const DEFAULT_FILTERS = { hours: 24 * 7, appVersion: '', networkType: '', deviceModel: '' }
@@ -36,7 +37,8 @@ export default function App() {
   const [health, setHealth]         = useState(null)
   const [devices, setDevices]       = useState([])
   const [versions, setVersions]     = useState([])
-  const [netByType, setNetByType]   = useState([])
+  const [netByType, setNetByType]     = useState([])
+  const [eventsOverTime, setEventsOverTime] = useState([])
   const [loading, setLoading]   = useState(false)
   const [error, setError]       = useState(null)
 
@@ -45,7 +47,7 @@ export default function App() {
     setError(null)
     const p = buildParams(filters)
     try {
-      const [s, st, sc, n, tr, er, hs, dev, ver, nbt] = await Promise.all([
+      const [s, st, sc, n, tr, er, hs, dev, ver, nbt, eot] = await Promise.all([
         getSummary(p),
         getStartup(p),
         getScreens(p),
@@ -56,6 +58,7 @@ export default function App() {
         getSlowestDevices(p),
         getVersionStats(p),
         getNetworkByType(p),
+        getEventsOverTime(p),
       ])
       setSummary(s.data)
       setStartup(st.data)
@@ -67,6 +70,7 @@ export default function App() {
       setDevices(dev.data)
       setVersions(ver.data)
       setNetByType(nbt.data)
+      setEventsOverTime(eot.data)
     } catch (err) {
       setError(err.message || 'Failed to load data')
     } finally {
@@ -89,12 +93,14 @@ export default function App() {
       <HealthScore data={health} />
 
       <div className="kpi-row">
+        <KpiCard label="Sessions"         value={summary?.sessionCount} unit="" />
         <KpiCard label="Avg App Startup"  value={summary?.avgStartupMs} />
         <KpiCard label="Avg Screen Load"  value={summary?.avgScreenLoadMs} />
         <KpiCard label="Avg Network Req"  value={summary?.avgNetworkMs} />
         <KpiCard label="Total Events"     value={summary?.totalEvents} unit="" />
       </div>
 
+      <EventsOverTime data={eventsOverTime} />
       <StartupChart data={startup} />
       <SlowestDevices   data={devices} />
       <VersionStats     data={versions} />

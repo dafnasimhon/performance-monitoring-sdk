@@ -28,4 +28,10 @@ internal interface EventDao {
 
     @Query("SELECT COUNT(*) FROM events WHERE uploadStatus = 'PENDING'")
     suspend fun countPendingEvents(): Int
+
+    @Query("SELECT COUNT(*) FROM events")
+    suspend fun countAllEvents(): Int
+
+    @Query("DELETE FROM events WHERE eventId IN (SELECT eventId FROM events ORDER BY timestamp ASC LIMIT :count)")
+    suspend fun deleteOldestEvents(count: Int)
 }

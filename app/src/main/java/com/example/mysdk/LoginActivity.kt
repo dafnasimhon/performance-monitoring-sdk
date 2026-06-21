@@ -8,7 +8,10 @@ import androidx.lifecycle.lifecycleScope
 import com.example.mysdk.api.RetrofitClient
 import com.example.mysdk.api.models.LoginRequest
 import com.example.mysdk.databinding.ActivityLoginBinding
+import com.example.perfsdk.PerfSDK
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
 
@@ -44,6 +47,13 @@ class LoginActivity : AppCompatActivity() {
         binding.tvStatus.visibility     = View.GONE
 
         lifecycleScope.launch {
+            // Validate input fields before sending — delay varies by input length
+            PerfSDK.startTrace("validateForm")
+            withContext(Dispatchers.Default) {
+                Thread.sleep((username.length * 12 + password.length * 8).toLong())
+            }
+            PerfSDK.stopTrace("validateForm")
+
             val result = tracked("POST", "/auth/login") {
                 RetrofitClient.api.login(LoginRequest(username, password))
             }
