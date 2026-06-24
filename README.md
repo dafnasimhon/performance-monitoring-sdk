@@ -1,10 +1,10 @@
-# PerfSDK — Android Performance Monitoring SDK
+# PerfSDK - Android Performance Monitoring SDK
 
-A full-stack Android performance monitoring solution built as a seminar project at Afeka College of Engineering.
+A full-stack Android performance monitoring solution
 
 ## Overview
 
-PerfSDK automatically collects performance data from Android apps — startup time, screen load time, network latency, and custom traces — batches it locally, and ships it to a backend for aggregation and display on a real-time React dashboard.
+PerfSDK automatically collects performance data from Android apps - startup time, screen load time, network latency, and custom traces - batches it locally, and ships it to a backend for aggregation and display on a real-time React dashboard.
 
 ---
 
@@ -44,13 +44,13 @@ seminar/
 | Feature | How it works |
 |---|---|
 | App Startup Time | Measured from `Application.onCreate()` to first `Activity.onResume()` |
-| Screen Load Time | Auto-measured via `ActivityLifecycleCallbacks` — no code required |
-| Network Tracking | OkHttp interceptor — add one line to your `OkHttpClient` |
+| Screen Load Time | Auto-measured via `ActivityLifecycleCallbacks` - no code required |
+| Network Tracking | OkHttp interceptor - add one line to your `OkHttpClient` |
 | Custom Traces | `PerfSDK.startTrace("name")` / `PerfSDK.stopTrace("name")` |
 | Batch Upload | Room DB → WorkManager + 30s timer → FastAPI endpoint |
 | PII Protection | `DataSanitizer` strips sensitive fields before upload |
 | Offline Support | Events persist in Room, retried automatically when network returns |
-| Queue Limit | Max 1000 events in Room — oldest dropped when cap is reached |
+| Queue Limit | Max 1000 events in Room - oldest dropped when cap is reached |
 
 ### SDK Integration (3 steps)
 
@@ -178,7 +178,7 @@ Score = (earned points / max possible) × 100. Grade: A ≥ 90, B ≥ 75, C ≥ 
 
 ---
 
-## Demo App — QuickShop
+## Demo App - QuickShop
 
 A mini e-commerce app using [fakestoreapi.com](https://fakestoreapi.com) that exercises every SDK feature.
 
@@ -195,7 +195,7 @@ A mini e-commerce app using [fakestoreapi.com](https://fakestoreapi.com) that ex
 
 ## Security
 
-- API keys are stored as SHA-256 hashes in MongoDB — never in plain text
+- API keys are stored as SHA-256 hashes in MongoDB - never in plain text
 - The OkHttp interceptor strips query parameters from URLs before tracking (prevents PII leakage)
 - `.env` is listed in `.gitignore` and must never be committed
 - `DataSanitizer` removes sensitive fields from events before upload

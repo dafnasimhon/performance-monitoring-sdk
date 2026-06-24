@@ -27,3 +27,8 @@ backend/**/*.pyc
 dashboard/node_modules/
 dashboard/dist/
 dashboard/.vite/
+
+# Docs
+docs/node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
