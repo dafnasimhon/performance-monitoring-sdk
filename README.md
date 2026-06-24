@@ -175,10 +175,20 @@ Dashboard runs at `http://localhost:5173`. Requires the backend to be running.
 | Error Rate | 0% | < 1% | < 5% | ≥ 5% |
 
 Score = (earned points / max possible) × 100. Grade: A ≥ 90, B ≥ 75, C ≥ 60, D ≥ 40, F < 40.
+<img width="634" height="618" alt="image" src="https://github.com/user-attachments/assets/437032b4-0393-42e5-bf90-b71a9e638300" />
+
+<img width="637" height="602" alt="image" src="https://github.com/user-attachments/assets/f8a47617-916c-40ff-9533-f3e03dc27a66" />
+
+<img width="674" height="685" alt="image" src="https://github.com/user-attachments/assets/d00552bc-266e-4d6d-a067-b12a290799ed" />
 
 ---
 
+<<<<<<< HEAD
 ## Demo App - QuickShop
+=======
+
+## Demo App — QuickShop
+>>>>>>> 288c2e0429d0b0c72df724e54bb0fdb2228ec4e2
 
 A mini e-commerce app using [fakestoreapi.com](https://fakestoreapi.com) that exercises every SDK feature.
 
