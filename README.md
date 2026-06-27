@@ -7,7 +7,10 @@ A full-stack Android performance monitoring solution
 PerfSDK automatically collects performance data from Android apps - startup time, screen load time, network latency, and custom traces - batches it locally, and ships it to a backend for aggregation and display on a real-time React dashboard.
 
 ---
+## Demo
+[![PerfSDK Demo](https://img.youtube.com/vi/gjr-lILGdEw/0.jpg)](https://youtu.be/gjr-lILGdEw)
 
+--
 ## Architecture
 
 ```
